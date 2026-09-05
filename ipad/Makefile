@@ -11,9 +11,9 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = ffzipad
 
-$(TWEAK_NAME)_CCFLAGS = -std=c++17 -fno-rtti -DNDEBUG -DIPAD_BUILD=1 -Wall -Wno-deprecated-declarations -Wno-unused-variable -Wno-unused-value -Wno-unused-function -fvisibility=default -x objective-c++
+$(TWEAK_NAME)_CCFLAGS = -std=c++17 -fno-rtti -DNDEBUG -DIPAD_BUILD=1 -I$(THEOS_PROJECT_DIR)/.. -Wall -Wno-deprecated-declarations -Wno-unused-variable -Wno-unused-value -Wno-unused-function -fvisibility=default -x objective-c++
 
-$(TWEAK_NAME)_CFLAGS = -fobjc-arc -DIPAD_BUILD=1 -Wall -Wno-deprecated-declarations -Wno-unused-variable -Wno-unused-value -Wno-unused-function -fvisibility=default
+$(TWEAK_NAME)_CFLAGS = -fobjc-arc -DIPAD_BUILD=1 -I$(THEOS_PROJECT_DIR)/.. -Wall -Wno-deprecated-declarations -Wno-unused-variable -Wno-unused-value -Wno-unused-function -fvisibility=default
 
 $(TWEAK_NAME)_LDFLAGS = -lSystem
 $(TWEAK_NAME)_LDFLAGS += -L$(THEOS_PROJECT_DIR)/..
