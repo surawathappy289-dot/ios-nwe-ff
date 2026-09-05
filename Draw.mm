@@ -653,6 +653,11 @@ static bool ClearCache = false;
 
     // Setup panel dimensions based on screen size
     CGFloat screenWidth = kScreenWidth;
+#ifdef IPAD_BUILD
+    // iPad: scale panel to screen, fits any orientation
+    panelWidth = MIN(screenWidth * 0.88, 880.0);
+    panelHeight = MIN(kScreenHeight * 0.72, 620.0);
+#else
     if (screenWidth <= 375) {
         panelWidth = kPanelWidthCompact;
         panelHeight = kPanelHeightCompact;
@@ -663,6 +668,7 @@ static bool ClearCache = false;
         panelWidth = kPanelWidthLarge;
         panelHeight = kPanelHeightLarge;
     }
+#endif
     
     isDarkMode = YES;
     self.currentTab = MenuTabESP;

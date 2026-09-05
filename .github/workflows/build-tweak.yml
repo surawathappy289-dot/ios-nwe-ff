@@ -39,6 +39,27 @@ jobs:
         echo "Building..."
         make package FINALPACKAGE=1 || (make clean && make package FINALPACKAGE=1)
 
+    - name: Build iPad Tweak
+      run: |
+        export THEOS=~/theos
+        cd $GITHUB_WORKSPACE/ipad
+        echo "Building iPad version..."
+        make package FINALPACKAGE=1 || (make clean && make package FINALPACKAGE=1)
+
+    - name: Build iPad IPA
+      if: always()
+      run: |
+        IPAD_DEB=$(find $GITHUB_WORKSPACE/ipad -name "*.deb" -type f | head -1)
+        if [ -n "$IPAD_DEB" ]; then
+          echo "Found iPad DEB: $IPAD_DEB"
+          chmod +x $GITHUB_WORKSPACE/scripts/deb-to-ipa.sh
+          APP_NAME=ffzipad BUNDLE_ID=com.zexis.so.ipad APP_TITLE="IMGuiMod (iPad)" \
+            DEVICE_FAMILY="2" OUTPUT_IPA=ffzipad-ipad.ipa \
+            bash $GITHUB_WORKSPACE/scripts/deb-to-ipa.sh "$IPAD_DEB" "$GITHUB_WORKSPACE"
+        else
+          echo "No iPad DEB found, skipping IPA"
+        fi
+
     - name: Check Output
       if: always()
       run: |
@@ -56,8 +77,12 @@ jobs:
         name: build-output
         path: |
           packages/
+          ipad/packages/
           debs/
           *.deb
           *.ipa
+          **/*.deb
+          **/*.ipa
+          **/*.dylib
         retention-days: 7
          

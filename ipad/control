@@ -1,0 +1,9 @@
+Package: com.zexis.so.ipad
+Name: IMGuiMod (iPad)
+Depends: mobilesubstrate, firmware (>= 15.0)
+Conflicts: com.zexis.so
+Version: 4.0
+Architecture: iphoneos-arm
+Description: ModMenu - iPad optimized layout
+Maintainer: Zexis
+Author: Zexis
