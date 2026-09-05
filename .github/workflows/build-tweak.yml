@@ -7,7 +7,62 @@ on:
     branches: [ main, master, develop ]
   workflow_dispatch:
 
+jobs:name: Build Tweak IPA
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
 jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: false
+
+    - name: Setup Theos
+      run: |
+        git clone --depth=1 https://github.com/theos/theos.git ~/theos
+        echo "THEOS=~/theos" >> $GITHUB_ENV
+
+    - name: Install Theos Dependencies
+      run: |
+        brew install ldid xz
+        git clone --depth=1 https://github.com/theos/sdks.git ~/theos/sdks
+
+    - name: Clean and Build
+      run: |
+        cd $GITHUB_WORKSPACE
+        make clean
+        make package FINALPACKAGE=1
+
+    - name: Convert DEB to IPA
+      run: |
+        cd $GITHUB_WORKSPACE
+        mkdir -p packages
+        DEB_FILE=$(find . -name "*.deb" -type f | head -1)
+        if [ -n "$DEB_FILE" ]; then
+          echo "Found DEB: $DEB_FILE"
+          mkdir -p Payload
+          dpkg-deb -x "$DEB_FILE" Payload/
+          zip -r packages/output.ipa Payload
+          rm -rf Payload
+        fi
+        ls -la packages/
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: |
+          packages/**/*.deb
+          packages/**/*.ipa
   build:
     runs-on: macos-latest
     
