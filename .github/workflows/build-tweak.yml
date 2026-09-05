@@ -24,7 +24,7 @@ jobs:
     - name: Install Dependencies
       run: |
         # เพิ่ม dpkg เพื่อให้สามารถแพ็กไฟล์ .deb ได้
-        brew install ldid xz gettext dpkg
+        brew install ldid xz gettext dpkg zstd
         mkdir -p ~/theos/sdks
         # SDK 16.5 ตรงกับที่โปรเจกต์ใช้ build จริง (ยืนยันจาก object file ใน repo)
         curl -L https://github.com/theos/sdks/releases/latest/download/iPhoneOS16.5.sdk.tar.xz | tar -xJ -C ~/theos/sdks/

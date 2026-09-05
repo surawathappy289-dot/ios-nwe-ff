@@ -49,7 +49,20 @@ mkdir -p "$EXTRACT_DIR" "$PAYLOAD_DIR"
 echo "Extracting DEB package..."
 cd "$EXTRACT_DIR"
 ar x "$DEB_FILE"
-tar xf data.tar.xz || tar xf data.tar.gz || tar xf data.tar
+DATA_TAR=$(ls data.tar.* 2>/dev/null | head -1)
+if [ -z "$DATA_TAR" ]; then
+    echo "Error: no data.tar.* found in DEB:"
+    ls -la
+    exit 1
+fi
+echo "Data archive: $DATA_TAR"
+if ! tar -xf "$DATA_TAR" 2>/dev/null; then
+    # Fallback for zstd archives if tar lacks zstd support
+    case "$DATA_TAR" in
+        *.zst) zstd -d -c "$DATA_TAR" | tar -x ;;
+        *) tar -xf "$DATA_TAR" ;;
+    esac
+fi
 
 echo "Creating IPA structure..."
 # Find the library and create app structure
