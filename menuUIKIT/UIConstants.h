@@ -140,6 +140,7 @@ static const NSInteger kColorButtonBaseTag = 40000;
 
 // Menu color segments
 static const NSInteger kMenuColorSegmentPillTag = 77020;
+static const NSInteger kSegmentMenuColorContainerTag = 77020;
 static const NSInteger kMenuColorIndicatorTag = 9020;
 static const NSInteger kMenuColorButtonBaseTag = 50000;
 

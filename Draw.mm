@@ -844,7 +844,7 @@ static bool ClearCache = false;
     self.sidebarScrollView.clipsToBounds = NO;
     [sidebarContainer addSubview:self.sidebarScrollView];
     
-    NSArray *icons = kTabIcons;
+    const NSArray *icons = kTabIcons;
     const CGFloat startY = 16;
     const CGFloat totalHeight = startY + 
         (icons.count * (kTabIconSize + kTabSpacing)) + 16;
@@ -2425,7 +2425,7 @@ if (targetContainer) {
 }
 
 - (void)menuColorSegmentTapped:(UIButton *)sender {
-    NSInteger colorIndex = sender.tag - kSegmentMenuColorContainerTag;
+    NSInteger colorIndex = sender.tag - kMenuColorButtonBaseTag;
     
     if (colorIndex < 0 || colorIndex > 3) return;
     
