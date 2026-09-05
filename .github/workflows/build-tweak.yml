@@ -23,9 +23,11 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        brew install ldid xz gettext
+        # เพิ่ม dpkg เพื่อให้สามารถแพ็กไฟล์ .deb ได้
+        brew install ldid xz gettext dpkg
         mkdir -p ~/theos/sdks
-        curl -L https://github.com/theos/sdks/releases/download/latest/iPhoneOS14.0.sdk.tar.lz | tar -xJ -C ~/theos/sdks/
+        # เปลี่ยนเป็น 14.5.sdk.tar.xz เพื่อให้แตกไฟล์ด้วย -xJ ได้อย่างถูกต้อง
+        curl -L https://github.com/theos/sdks/releases/latest/download/iPhoneOS14.5.sdk.tar.xz | tar -xJ -C ~/theos/sdks/
 
     - name: Build Tweak
       run: |
