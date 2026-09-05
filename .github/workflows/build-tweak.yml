@@ -13,48 +13,72 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
 
     - name: Setup Theos
       run: |
-        git clone --depth=1 https://github.com/theos/theos.git ~/theos
-        echo "THEOS=~/theos" >> $GITHUB_ENV
+        git clone --depth=1 https://github.com/theos/theos.git $HOME/theos
+        echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+        echo "$HOME/theos/bin" >> $GITHUB_PATH
 
     - name: Install Theos Dependencies
       run: |
-        brew install ldid xz
-        git clone --depth=1 https://github.com/theos/sdks.git ~/theos/sdks
+        brew install ldid xz dpkg-dev
+        git clone --depth=1 https://github.com/theos/sdks.git $HOME/theos/sdks
+
+    - name: Build Theos Makefiles
+      run: |
+        cd $HOME/theos/makefiles
+        make -C $HOME/theos install
 
     - name: Clean and Build
       run: |
+        export THEOS=$HOME/theos
+        export THEOS_MAKE_PATH=$HOME/theos/makefiles
         cd $GITHUB_WORKSPACE
         make clean
         make package FINALPACKAGE=1
 
+    - name: Check Build Output
+      run: |
+        ls -la packages/ 2>/dev/null || echo "No packages directory"
+        find . -name "*.deb" -type f 2>/dev/null || echo "No .deb files found"
+
     - name: Convert DEB to IPA
+      if: always()
       run: |
         cd $GITHUB_WORKSPACE
-        chmod +x scripts/deb-to-ipa.sh
-        DEB_FILE=$(find packages -name "*.deb" -type f | head -1)
-        if [ -n "$DEB_FILE" ]; then
-          scripts/deb-to-ipa.sh "$DEB_FILE" "packages"
+        if [ -f scripts/deb-to-ipa.sh ]; then
+          chmod +x scripts/deb-to-ipa.sh
+          DEB_FILE=$(find . -name "*.deb" -type f | head -1)
+          if [ -n "$DEB_FILE" ]; then
+            mkdir -p packages
+            scripts/deb-to-ipa.sh "$DEB_FILE" "packages"
+            echo "IPA conversion complete"
+          else
+            echo "No DEB file found for conversion"
+          fi
         fi
-        ls -la packages/
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      if: always()
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |
-          packages/**/*.deb
-          packages/**/*.ipa
+          packages/
+          **/*.deb
+          **/*.ipa
+        retention-days: 5
           
     - name: Create Release (on tag)
       if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
-        files: packages/**/*
+        files: |
+          packages/**/*.deb
+          packages/**/*.ipa
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
