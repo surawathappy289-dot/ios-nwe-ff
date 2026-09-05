@@ -36,25 +36,23 @@ jobs:
     - name: Convert DEB to IPA
       run: |
         cd $GITHUB_WORKSPACE
-        chmod +x scripts/deb-to-ipa.sh
-        DEB_FILE=$(find packages -name "*.deb" -type f | head -1)
+        mkdir -p packages
+        DEB_FILE=$(find . -name "*.deb" -type f | head -1)
         if [ -n "$DEB_FILE" ]; then
-          scripts/deb-to-ipa.sh "$DEB_FILE" "packages"
+          echo "Found DEB: $DEB_FILE"
+          # สร้างโครงสร้าง Payload สำหรับแปลงเป็น IPA
+          mkdir -p Payload
+          dpkg-deb -x "$DEB_FILE" Payload/
+          # แพ็กกลับเป็น IPA
+          zip -r packages/output.ipa Payload
+          rm -rf Payload
         fi
         ls -la packages/
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |
           packages/**/*.deb
           packages/**/*.ipa
-          
-    - name: Create Release (on tag)
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
-      with:
-        files: packages/**/*
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
