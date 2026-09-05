@@ -1,0 +1,61 @@
+# ========== Theos Build (สำคัญ!) ==========
+.theos/
+packages/
+obj/
+build/
+
+# ========== Build Output (ไม่ upload) ==========
+*.deb
+*.ipa
+*.o
+*.a
+*.so
+*.dylib
+*.framework/
+
+# ========== Large/Binary Files ==========
+*.mp4
+*.mov
+*.mkv
+*.zip
+*.tar.gz
+*.tar
+*.7z
+*.rar
+*.dmg
+*.iso
+*.bin
+*.exe
+*.dll
+
+# ========== Dependency Folders (ขนาดใหญ่) ==========
+node_modules/
+Pods/
+vendor/
+.venv/
+venv/
+__pycache__/
+
+# ========== Generated Files ==========
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+.DS_Store
+Thumbs.db
+
+# ========== IDE & Tools ==========
+.vscode/
+.idea/
+*.swiftpm/
+*.xcodeproj/
+*.xcworkspace/
+*.sublime-*
+.DS_Store
+
+# ========== Junk ==========
+*.log
+.gradle/
+dist/
+target/
