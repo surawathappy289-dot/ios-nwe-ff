@@ -62,7 +62,6 @@
 #include "Helper/Obfuscate.h"
 #import "menuUIKIT/drawfunc.h"
 #import "menuUIKIT/UIConstants.h"
-#import "menuUIKIT/THConstants.h"
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
 #include <unistd.h>
@@ -196,22 +195,7 @@ UIColor* GetThemeGlowColor(void) {
     return [UIColor colorWithRed:1.0 green:0.2 blue:0.2 alpha:0.7];
 }
 
-#pragma mark - Global Sizing Constants
-
-static const CGFloat kSidebarWidth = 70;
-static const CGFloat kTabIconSize = 48;
-static const CGFloat kTabIconImageSize = 28;
-static const CGFloat kTabSpacing = 8;
-static const CGFloat kPillHeight = 50;
-static const CGFloat kPillSpacing = 7;
-static const CGFloat kContentPadding = 10;
-static const CGFloat kContentTopInset = 5;
-static const CGFloat kContentBottomInset = 10;
-static const CGFloat kSeparatorPadding = 25;
-
-
-
-
+// Sizing constants are defined in menuUIKIT/UIConstants.h
 
 void secureCrash() {
     volatile char *ptr = (char *)0x1;
